@@ -3,47 +3,42 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.springframework</groupId>
-  <artifactId>gs-maven</artifactId>
-  <version>0.1.0</version>
-  <packaging>war</packaging>
+    <modelVersion>4.0.0</modelVersion>
 
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+    <groupId>org.example</groupId>
+    <artifactId>gs-maven</artifactId>
+    <version>0.1.0</version>
+    <packaging>war</packaging>
 
-  <dependencies>
-    <!-- Joda-Time for time handling -->
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.9.2</version>
-    </dependency>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-    <!-- Servlet API for web app (provided by server like Tomcat) -->
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>6.0.0</version>
-      <scope>provided</scope>
-    </dependency>
+    <dependencies>
 
-    <!-- JUnit for tests -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <!-- Servlet API (Tomcat 9 uses javax.servlet) -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 
-  <build>
-    <finalName>gs-maven</finalName>
-    <!-- Optional: WAR plugin config is usually not needed unless customizing behavior -->
-  </build>
+        <!-- JUnit for testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>gs-maven</finalName>
+    </build>
 
 </project>
-
