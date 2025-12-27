@@ -45,7 +45,7 @@
     </dependencies>
 
     <build>
-        <finalName>gs-maven</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
     </build>
 
 </project>
