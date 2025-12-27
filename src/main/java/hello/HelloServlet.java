@@ -13,6 +13,6 @@ public class HelloServlet extends HttpServlet {
             throws ServletException, IOException {
 
         resp.setContentType("text/plain");
-        resp.getWriter().println("Hi evryone i am DARSHAN S V");
+        resp.getWriter().println("i love you KEERTHANA");
     }
 }
