@@ -13,6 +13,6 @@ public class HelloServlet extends HttpServlet {
             throws ServletException, IOException {
 
         resp.setContentType("text/plain");
-        resp.getWriter().println("i wish i automated everything correctly so that i get correct output");
+        resp.getWriter().println("i wish i automated everything correctly so that i get correct output.");
     }
 }
