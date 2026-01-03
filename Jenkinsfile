@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         APP_NAME = "gs-maven"
-        WAR_FILE = "target/gs-maven-0.1.0.war"
+        WAR_FILE = "gs-maven-0.1.0.war"          // WAR in workspace root
         DOCKER_IMAGE = "gs-maven-app:latest"
         DOCKER_CONTAINER = "gs-maven-container"
         REMOTE_USER = "ubuntu"
@@ -21,19 +21,28 @@ pipeline {
 
         stage('Build WAR') {
             steps {
-                sh 'mvn clean package '
+                // Build WAR using Maven
+                sh 'mvn clean package'
+                
+                // Copy WAR to workspace root so Docker can access it
+                sh 'cp target/*.war .'
             }
         }
-      
+
         stage('Run Tests') {
-             steps {
-                 sh 'mvn test'
-             }
+            steps {
+                // Run unit tests
+                sh 'mvn test'
+            }
         }
 
-         stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
-                sh "docker build --build-arg WAR_FILE=${WAR_FILE} -t ${DOCKER_IMAGE} ."
+                sh """
+                docker build \
+                    --build-arg WAR_FILE=${WAR_FILE} \
+                    -t ${DOCKER_IMAGE} .
+                """
             }
         }
 
@@ -41,6 +50,7 @@ pipeline {
             steps {
                 sh """
                 ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
+                    docker pull ${DOCKER_IMAGE} || true
                     docker stop ${DOCKER_CONTAINER} || true
                     docker rm ${DOCKER_CONTAINER} || true
                     docker run -d --name ${DOCKER_CONTAINER} -p 8080:8080 ${DOCKER_IMAGE}
@@ -60,3 +70,4 @@ pipeline {
         }
     }
 }
+
