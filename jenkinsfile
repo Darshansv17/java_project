@@ -15,17 +15,23 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'git@github.com:darshansv/gs-maven.git'
+                git branch: 'main', url: 'git@github.com:Darshansv17/java_project.git'
             }
         }
 
         stage('Build WAR') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                sh 'mvn clean package '
             }
         }
+      
+        stage('Run Tests') {
+             steps {
+                 sh 'mvn test'
+             }
+        }
 
-        stage('Build Docker Image') {
+         stage('Build Docker Image') {
             steps {
                 sh "docker build --build-arg WAR_FILE=${WAR_FILE} -t ${DOCKER_IMAGE} ."
             }
