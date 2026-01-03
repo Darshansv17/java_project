@@ -7,8 +7,8 @@ LABEL maintainer="darshansv <your-email@example.com>"
 # Remove default Tomcat webapps to avoid conflicts
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy WAR from workspace root to Tomcat webapps folder
-ARG WAR_FILE
+# Copy WAR from workspace root (passed from Jenkins) to Tomcat
+ARG WAR_FILE=gs-maven-0.1.0.war
 COPY ${WAR_FILE} /usr/local/tomcat/webapps/ROOT.war
 
 # Expose Tomcat port
