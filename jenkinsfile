@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = "gs-maven"
+        WAR_FILE = "target/${APP_NAME}-0.1.0.war"
+        DOCKER_IMAGE = "gs-maven-app:latest"
+        REMOTE_USER = "ubuntu"
+        REMOTE_HOST = "16.171.129.229"
+        SSH_KEY = "/var/lib/jenkins/.ssh/id_ed25519"
+        DOCKER_CONTAINER = "gs-maven-container"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'git@github.com:darshansv/gs-maven.git'
+            }
+        }
+
+        stage('Build WAR') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    writeFile file: 'Dockerfile', text: """
+                    FROM tomcat:9.0
+                    COPY ${WAR_FILE} /usr/local/tomcat/webapps/${APP_NAME}.war
+                    EXPOSE 8080
+                    """
+                }
+                sh "docker build -t ${DOCKER_IMAGE} ."
+            }
+        }
+
+        stage('Deploy to EC2-B') {
+            steps {
+                script {
+                    sh """
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
+                        docker stop ${DOCKER_CONTAINER} || true
+                        docker rm ${DOCKER_CONTAINER} || true
+                        docker run -d --name ${DOCKER_CONTAINER} -p 8080:8080 ${DOCKER_IMAGE}
+                    '
+                    """
+                }
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo "Deployment successful! Open http://${REMOTE_HOST}:8080/${APP_NAME}/"
+        }
+        failure {
+            echo "Deployment failed!"
+        }
+    }
+}
