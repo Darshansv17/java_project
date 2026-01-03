@@ -1,0 +1,8 @@
+# Ignore Maven target except the WAR we need
+target/*
+!target/*.war
+
+# Ignore other unnecessary files
+.git
+.gitignore
+README.md
