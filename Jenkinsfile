@@ -50,7 +50,6 @@ pipeline {
             steps {
                 sh """
                 ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
-                    docker pull ${DOCKER_IMAGE} || true
                     docker stop ${DOCKER_CONTAINER} || true
                     docker rm ${DOCKER_CONTAINER} || true
                     docker run -d --name ${DOCKER_CONTAINER} -p 8080:8080 ${DOCKER_IMAGE}
@@ -70,4 +69,3 @@ pipeline {
         }
     }
 }
-
