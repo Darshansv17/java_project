@@ -1,9 +1,10 @@
+
 pipeline {
     agent any
 
     environment {
         APP_NAME = "gs-maven"
-        WAR_FILE = "gs-maven-0.1.0.war"          // WAR copied to workspace root
+        WAR_FILE = "target/gs-maven-0.1.0.war"  // full path in workspace
         DOCKER_IMAGE = "gs-maven-app:latest"
         DOCKER_CONTAINER = "gs-maven-container"
         REMOTE_USER = "ubuntu"
@@ -21,17 +22,13 @@ pipeline {
 
         stage('Build WAR') {
             steps {
-                echo "Building WAR file..."
                 sh 'mvn clean package'
-                
-                // Copy WAR to workspace root so Docker can access it
-                sh 'cp target/*.war .'
+                sh 'ls -l target/'  // verify WAR is generated
             }
         }
 
         stage('Run Tests') {
             steps {
-                echo "Running unit tests..."
                 sh 'mvn test'
             }
         }
@@ -49,10 +46,8 @@ pipeline {
 
         stage('Push Docker Image (Optional)') {
             steps {
-                echo "Optional: Push Docker image to registry if needed"
-                // Example:
-                // sh "docker tag ${DOCKER_IMAGE} <your-repo>/<image>:latest"
-                // sh "docker push <your-repo>/<image>:latest"
+                // If you have a Docker registry, you can push here
+                echo "Skipping push step (optional)"
             }
         }
 
@@ -68,7 +63,6 @@ pipeline {
                 """
             }
         }
-
     }
 
     post {
