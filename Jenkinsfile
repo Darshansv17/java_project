@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         APP_NAME = "gs-maven"
-        WAR_FILE = "gs-maven-0.1.0.war"          // WAR in workspace root
+        WAR_FILE = "gs-maven-0.1.0.war"  // WAR in workspace root
         DOCKER_IMAGE = "gs-maven-app:latest"
         DOCKER_CONTAINER = "gs-maven-container"
         REMOTE_USER = "ubuntu"
@@ -21,23 +21,27 @@ pipeline {
 
         stage('Build WAR') {
             steps {
-                // Build WAR using Maven
+                echo "Building WAR file..."
                 sh 'mvn clean package'
-                
-                // Copy WAR to workspace root so Docker can access it
+
+                // Copy WAR to workspace root (where Dockerfile is)
                 sh 'cp target/*.war .'
+
+                // Optional: List files to confirm WAR exists
+                sh 'ls -l'
             }
         }
 
         stage('Run Tests') {
             steps {
-                // Run unit tests
+                echo "Running unit tests..."
                 sh 'mvn test'
             }
         }
 
         stage('Build Docker Image') {
             steps {
+                echo "Building Docker image..."
                 sh """
                 docker build \
                     --build-arg WAR_FILE=${WAR_FILE} \
@@ -48,6 +52,7 @@ pipeline {
 
         stage('Deploy to EC2-B') {
             steps {
+                echo "Deploying Docker container to EC2-B..."
                 sh """
                 ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} '
                     docker stop ${DOCKER_CONTAINER} || true
