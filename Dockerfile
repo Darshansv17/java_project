@@ -14,7 +14,7 @@ ARG WAR_FILE
 COPY ${WAR_FILE} /usr/local/tomcat/webapps/ROOT.war
 
 # Expose Tomcat port
-EXPOSE 8080
+EXPOSE 8081
 
 # Start Tomcat
 CMD ["catalina.sh", "run"]
